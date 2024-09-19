@@ -24,6 +24,7 @@
 #include <string>
 #include <cstdio>
 
+#include <iterator>
 #ifdef __APPLE__
 #include <libproc.h>
 #endif
@@ -75,8 +76,7 @@ getProcessArgs()
 
 
 #if LOG4CPLUS_VERSION < LOG4CPLUS_MAKE_VERSION(2, 0, 0)
-#define MOVE_LAYOUT(l)  l
-#define UNIQUE_PTR      std::auto_ptr
+#define UNIQUE_PTR      std::unique_ptr
 #else
 using log4cplus::spi::getLayoutFactoryRegistry;
 #define MOVE_LAYOUT(l)  std::move(l)
@@ -149,7 +149,7 @@ initializeLogging()
             (new log4cplus::ConsoleAppender(configs[i].logToStdErr,
                                             configs[i].immediateFlush));
 
-// Disable deprecation warning for std::auto_ptr.   This can be
+// Disable deprecation warning for std::unique_ptr.   This can be
 // removed once we are using std::unique_ptr after we upgrade
 // log4cplus with CM-17036.
 #if defined(__ICC)

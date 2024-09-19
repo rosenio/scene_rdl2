@@ -28,5 +28,6 @@ function(SceneRdl2_cxx_compile_definitions target)
             _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR=1 # Clang - enable auto_ptr when targeting c++17
             _LIBCPP_ENABLE_CXX17_REMOVED_RANDOM_SHUFFLE=1 # Clang - ensure std::random_shuffle is available
             _LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION
+            DWA_OPENDCX_EXPORTS
     )
 endfunction()

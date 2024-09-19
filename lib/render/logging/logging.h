@@ -8,7 +8,7 @@
 
 #include "LoggingAssert.h"
 
-#include <scene_rdl2/render/util/AtomicFloat.h>
+#include <D:/GITHUB/openmoonray/moonray/scene_rdl2/lib/render/util/AtomicFloat.h>
 
 #include <algorithm>
 #include <atomic>
@@ -18,6 +18,7 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <iterator>
 
 #include <log4cplus/loglevel.h>
 

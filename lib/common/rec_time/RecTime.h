@@ -5,7 +5,11 @@
 
 #include <sstream>
 
+#ifdef _WIN32
+#include <C:/msys64/usr/include/sys/time.h>
+#else
 #include <sys/time.h>
+#endif
 #include <stdint.h>
 
 namespace scene_rdl2 {

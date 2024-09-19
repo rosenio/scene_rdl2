@@ -24,12 +24,13 @@ namespace af_detail {
 
 // We do a lot of casting to integer values for the intrinsics interface. Let's make sure we are casting the values we
 // think we are.
-static_assert(__ATOMIC_RELAXED == static_cast<int>(std::memory_order_relaxed));
-static_assert(__ATOMIC_CONSUME == static_cast<int>(std::memory_order_consume));
-static_assert(__ATOMIC_ACQUIRE == static_cast<int>(std::memory_order_acquire));
-static_assert(__ATOMIC_RELEASE == static_cast<int>(std::memory_order_release));
-static_assert(__ATOMIC_ACQ_REL == static_cast<int>(std::memory_order_acq_rel));
-static_assert(__ATOMIC_SEQ_CST == static_cast<int>(std::memory_order_seq_cst));
+
+static_assert(_Atomic_memory_order_relaxed == static_cast<int>(std::memory_order_relaxed));
+static_assert(_Atomic_memory_order_consume == static_cast<int>(std::memory_order_consume));
+static_assert(_Atomic_memory_order_acquire == static_cast<int>(std::memory_order_acquire));
+static_assert(_Atomic_memory_order_release == static_cast<int>(std::memory_order_release));
+static_assert(_Atomic_memory_order_acq_rel == static_cast<int>(std::memory_order_acq_rel));
+static_assert(_Atomic_memory_order_seq_cst == static_cast<int>(std::memory_order_seq_cst));
 
 // In compare_exchange overloads where only one memory order is given, we have
 // to decide on the other. These are what is laid out by the standard.
@@ -47,7 +48,21 @@ constexpr std::memory_order compare_exchange_duo(std::memory_order in) noexcept
     return static_cast<std::memory_order>(mapping[static_cast<int>(in)]);
 }
 
+#if 1 // TRANSITION, ABI
+template <size_t _TypeSize>
+constexpr bool _Is_always_lock_free = _TypeSize <= 8 && (_TypeSize & (_TypeSize - 1)) == 0;
+#else // ^^^ don't break ABI / break ABI vvv
+#if _ATOMIC_HAS_DCAS
+template <size_t _TypeSize>
+constexpr bool _Is_always_lock_free = _TypeSize <= 2 * sizeof(void*);
+#else // ^^^ _ATOMIC_HAS_DCAS / !_ATOMIC_HAS_DCAS vvv
+template <size_t _TypeSize>
+constexpr bool _Is_always_lock_free = _TypeSize <= sizeof(void*);
+#endif // ^^^ !_ATOMIC_HAS_DCAS ^^^
+#endif // ^^^ break ABI ^^^
+
 template <typename T>
+
 class atomic_fp
 {
     static_assert(std::is_floating_point<T>::value, "Only for floating point types");
@@ -60,7 +75,7 @@ public:
     using value_type = T;
     using difference_type = value_type;
 
-    static constexpr bool is_always_lock_free = __atomic_always_lock_free(sizeof(T), 0);
+    static constexpr bool is_always_lock_free = _Is_always_lock_free<sizeof(T)>;
 
     atomic_fp() noexcept = default;
     constexpr atomic_fp(T t) : m_fp(t) { }

@@ -14,7 +14,14 @@
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
+#ifdef _WIN32
+#include <io.h>
+#define access _access
+
+#else
 #include <unistd.h>
+#endif
+
 #include <getopt.h>
 #include <cstring>
 

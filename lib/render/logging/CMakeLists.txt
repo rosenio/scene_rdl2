@@ -47,10 +47,12 @@ SceneRdl2_cxx_compile_features(${component})
 SceneRdl2_cxx_compile_options(${component})
 SceneRdl2_link_options(${component})
 
-# Disable auto_ptr deprecated warning from old log4cplus
+# Disable unique_ptr deprecated warning from old log4cplus
 target_compile_options(${component}
     PRIVATE
-        -Wno-deprecated-declarations
+        $<$<CXX_COMPILER_ID:MSVC>:/W3>
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-deprecated-declarations>
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-unused-value>
     )
 
 # -------------------------------------
